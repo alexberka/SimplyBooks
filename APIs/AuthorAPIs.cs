@@ -15,6 +15,7 @@ namespace SimplyBooks.APIs
                     a.FirstName,
                     a.LastName,
                     a.Image,
+                    a.Email,
                     a.Favorite
                 }));
             });
@@ -39,6 +40,7 @@ namespace SimplyBooks.APIs
                     author.FirstName,
                     author.LastName,
                     author.Email,
+                    author.Image,
                     Books = author.Books.Select(b => new
                     {
                         b.Id,
