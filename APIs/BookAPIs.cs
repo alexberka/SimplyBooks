@@ -62,7 +62,9 @@ namespace SimplyBooks.APIs
 
             app.MapPost("/books", (SimplyBooksDbContext db, Book bookSubmit) =>
             {
-                if (!db.Authors.Any(a => a.Id == bookSubmit.AuthorId))
+                Author? authorLink = db.Authors.SingleOrDefault(a => a.Id == bookSubmit.AuthorId);
+
+                if (authorLink == null || authorLink.Uid != bookSubmit.Uid)
                 {
                     return Results.BadRequest("Invalid Author Id");
                 }
@@ -96,8 +98,10 @@ namespace SimplyBooks.APIs
                 {
                     return Results.StatusCode(403);
                 }
-                
-                if (!db.Authors.Any(a => a.Id == bookSubmit.AuthorId))
+
+                Author? authorLink = db.Authors.SingleOrDefault(a => a.Id == bookSubmit.AuthorId);
+
+                if (authorLink == null || authorLink.Uid != bookSubmit.Uid)
                 {
                     return Results.BadRequest("Invalid Author Id");
                 }
