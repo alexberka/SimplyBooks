@@ -8,9 +8,9 @@ namespace SimplyBooks.APIs
     {
         public static void Map(WebApplication app)
         {
-            app.MapGet("/books", (SimplyBooksDbContext db, string Uid) =>
+            app.MapGet("/books", (SimplyBooksDbContext db, string uid) =>
             {
-                List<Book> userBooks = db.Books.Where(b => b.Uid == Uid).Include(b => b.Author).ToList();
+                List<Book> userBooks = db.Books.Where(b => b.Uid == uid).Include(b => b.Author).ToList();
 
                 return userBooks.Select(b => new
                 {
@@ -29,7 +29,7 @@ namespace SimplyBooks.APIs
                 .OrderBy(b => b.Title);
             });
 
-            app.MapGet("/books/{bookId}", (SimplyBooksDbContext db, int bookId, string Uid) =>
+            app.MapGet("/books/{bookId}", (SimplyBooksDbContext db, int bookId, string uid) =>
             {
                 Book? thisBook = db.Books.Include(b => b.Author).SingleOrDefault(b => b.Id == bookId);
 
@@ -37,7 +37,7 @@ namespace SimplyBooks.APIs
                 {
                     return Results.NotFound("Invalid Book Id");
                 }
-                if (thisBook.Uid != Uid)
+                if (thisBook.Uid != uid)
                 {
                     return Results.StatusCode(403);
                 }
@@ -117,7 +117,7 @@ namespace SimplyBooks.APIs
                 return Results.Ok(patchedBook);
             });
 
-            app.MapDelete("/books/{bookId}", (SimplyBooksDbContext db, int bookId, string Uid) =>
+            app.MapDelete("/books/{bookId}", (SimplyBooksDbContext db, int bookId, string uid) =>
             {
                 Book? deleteBook = db.Books.FirstOrDefault(b => b.Id == bookId);
 
@@ -126,7 +126,7 @@ namespace SimplyBooks.APIs
                     return Results.NotFound("Invalid Book Id");
                 }
 
-                if (deleteBook.Uid != Uid)
+                if (deleteBook.Uid != uid)
                 {
                     return Results.StatusCode(403);
                 }

@@ -7,9 +7,9 @@ namespace SimplyBooks.APIs
     {
         public static void Map(WebApplication app)
         {
-            app.MapGet("/authors", (SimplyBooksDbContext db, string Uid) =>
+            app.MapGet("/authors", (SimplyBooksDbContext db, string uid) =>
             {
-                return Results.Ok(db.Authors.Where(a => a.Uid == Uid).Select(a => new
+                return Results.Ok(db.Authors.Where(a => a.Uid == uid).Select(a => new
                 {
                     a.Id,
                     a.FirstName,
@@ -20,7 +20,7 @@ namespace SimplyBooks.APIs
                 }));
             });
 
-            app.MapGet("/authors/{authorId}", (SimplyBooksDbContext db, int authorId, string Uid) =>
+            app.MapGet("/authors/{authorId}", (SimplyBooksDbContext db, int authorId, string uid) =>
             {
                 Author? author = db.Authors.Include(a => a.Books).SingleOrDefault(a => a.Id == authorId);
 
@@ -29,7 +29,7 @@ namespace SimplyBooks.APIs
                     return Results.NotFound("Invalid Author Id");
                 }
 
-                if (author.Uid != Uid)
+                if (author.Uid != uid)
                 {
                     return Results.StatusCode(403);
                 }
@@ -96,7 +96,7 @@ namespace SimplyBooks.APIs
                 return Results.Ok(patchedAuthor);
             });
 
-            app.MapDelete("/authors/{authorId}", (SimplyBooksDbContext db, int authorId, string Uid) =>
+            app.MapDelete("/authors/{authorId}", (SimplyBooksDbContext db, int authorId, string uid) =>
             {
                 Author? authorDelete = db.Authors.SingleOrDefault(a => a.Id == authorId);
 
@@ -105,7 +105,7 @@ namespace SimplyBooks.APIs
                     return Results.NotFound("Invalid Author Id");
                 }
 
-                if (authorDelete.Uid != Uid)
+                if (authorDelete.Uid != uid)
                 {
                     return Results.StatusCode(403);
                 }
@@ -116,9 +116,9 @@ namespace SimplyBooks.APIs
                 return Results.NoContent();
             });
 
-            app.MapGet("/authors/favorite", (SimplyBooksDbContext db, string Uid) =>
+            app.MapGet("/authors/favorite", (SimplyBooksDbContext db, string uid) =>
             {
-                return Results.Ok(db.Authors.Where(a => a.Uid == Uid && a.Favorite == true).Select(a => new
+                return Results.Ok(db.Authors.Where(a => a.Uid == uid && a.Favorite == true).Select(a => new
                 {
                     a.Id,
                     a.FirstName,
@@ -129,7 +129,7 @@ namespace SimplyBooks.APIs
                 }));
             });
 
-            app.MapPatch("/authors/favorite/{authorId}", (SimplyBooksDbContext db, int authorId, string Uid) =>
+            app.MapPatch("/authors/favorite/{authorId}", (SimplyBooksDbContext db, int authorId, string uid) =>
             {
                 Author? author = db.Authors.SingleOrDefault(a => a.Id == authorId);
 
@@ -138,7 +138,7 @@ namespace SimplyBooks.APIs
                     return Results.NotFound("Invalid Author Id");
                 }
 
-                if (author.Uid != Uid)
+                if (author.Uid != uid)
                 {
                     return Results.StatusCode(403);
                 }
