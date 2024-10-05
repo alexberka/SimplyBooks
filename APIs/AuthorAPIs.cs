@@ -116,6 +116,45 @@ namespace SimplyBooks.APIs
                 return Results.NoContent();
             });
 
+            app.MapGet("/authors/favorite", (SimplyBooksDbContext db, string Uid) =>
+            {
+                return Results.Ok(db.Authors.Where(a => a.Uid == Uid && a.Favorite == true).Select(a => new
+                {
+                    a.Id,
+                    a.FirstName,
+                    a.LastName,
+                    a.Image,
+                    a.Email,
+                    a.Favorite
+                }));
+            });
+
+            app.MapPatch("/authors/favorite/{authorId}", (SimplyBooksDbContext db, int authorId, string Uid) =>
+            {
+                Author? author = db.Authors.SingleOrDefault(a => a.Id == authorId);
+
+                if (author == null)
+                {
+                    return Results.NotFound("Invalid Author Id");
+                }
+
+                if (author.Uid != Uid)
+                {
+                    return Results.StatusCode(403);
+                }
+
+                author.Favorite = !author.Favorite;
+
+                db.SaveChanges();
+
+                return Results.Ok(new
+                {
+                    author.Id,
+                    author.FirstName,
+                    author.LastName,
+                    author.Favorite
+                });
+            });
         }
     }
 }
